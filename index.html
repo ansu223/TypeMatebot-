@@ -1,0 +1,1749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <title>Pulse — Connect Deeper</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+        }
+
+        .app {
+            max-width: 500px;
+            margin: 0 auto;
+            background: #0a0a0a;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Live Activity Ticker - Fixed */
+        .ticker {
+            background: linear-gradient(90deg, #ff2d55, #ff6b6b);
+            padding: 10px 16px;
+            overflow: hidden;
+            white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 99;
+        }
+
+        .ticker-content {
+            display: inline-block;
+            animation: tickerScroll 20s linear infinite;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        @keyframes tickerScroll {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+
+        /* Tab Bar */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            max-width: 500px;
+            margin: 0 auto;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 20px 26px;
+            border-top: 0.5px solid rgba(255, 45, 85, 0.15);
+            z-index: 100;
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+            padding: 6px 12px;
+            border-radius: 30px;
+            position: relative;
+        }
+
+        .tab-item.active {
+            color: #ff2d55;
+            background: rgba(255, 45, 85, 0.1);
+        }
+
+        .badge-count {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #ff2d55;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+            min-width: 18px;
+        }
+
+        .tab-icon {
+            font-size: 24px;
+        }
+
+        .content {
+            padding: 20px 16px 100px;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* TalkLife Style Profile */
+        .profile-header {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 16px;
+            text-align: center;
+            border: 1px solid rgba(255, 45, 85, 0.1);
+        }
+
+        .profile-avatar-large {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff2d55, #ff6b6b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+            margin: 0 auto 16px;
+            border: 3px solid rgba(255, 45, 85, 0.3);
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            padding: 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff2d55;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        .badge-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin: 16px 0;
+        }
+
+        .achievement-badge {
+            background: rgba(255, 45, 85, 0.15);
+            border-radius: 20px;
+            padding: 6px 12px;
+            font-size: 11px;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(30, 30, 45, 0.9);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255, 45, 85, 0.08);
+        }
+
+        /* Streak Card */
+        .streak-card {
+            background: linear-gradient(135deg, #ff2d55, #ff6b6b);
+            text-align: center;
+        }
+
+        .streak-fire {
+            font-size: 48px;
+            animation: flameFlicker 0.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes flameFlicker {
+            from { transform: scale(1); opacity: 0.8; }
+            to { transform: scale(1.1); opacity: 1; }
+        }
+
+        /* Visitor Cards */
+        .visitor-card {
+            background: rgba(30, 30, 45, 0.9);
+            border-radius: 16px;
+            padding: 12px;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            position: relative;
+        }
+
+        .visitor-card.blurred {
+            filter: blur(8px);
+            pointer-events: none;
+        }
+
+        .unlock-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 16px;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+
+        .unlock-btn {
+            background: linear-gradient(135deg, #ff2d55, #ff6b6b);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Match Cards */
+        .match-card {
+            background: rgba(30, 30, 45, 0.9);
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 12px;
+            position: relative;
+            cursor: pointer;
+            border: 1px solid rgba(255, 45, 85, 0.08);
+        }
+
+        .match-card.urgent {
+            border: 1px solid #ff2d55;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 45, 85, 0.4); }
+            50% { box-shadow: 0 0 0 5px rgba(255, 45, 85, 0); }
+        }
+
+        .countdown-timer {
+            font-size: 12px;
+            color: #ff2d55;
+            margin-top: 8px;
+        }
+
+        .extend-btn {
+            background: rgba(255,45,85,0.2);
+            border: none;
+            color: #ff2d55;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            cursor: pointer;
+            margin-left: 8px;
+        }
+
+        /* Chat Components */
+        .chat-container {
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+            background: rgba(0,0,0,0.3);
+            border-radius: 24px;
+            overflow: hidden;
+        }
+
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 20px;
+            font-size: 15px;
+            line-height: 1.4;
+            animation: slideIn 0.2s ease;
+            position: relative;
+        }
+
+        .message.sent {
+            background: linear-gradient(135deg, #ff2d55, #ff6b6b);
+            align-self: flex-end;
+            border-bottom-right-radius: 4px;
+        }
+
+        .message.received {
+            background: rgba(255, 255, 255, 0.1);
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+        }
+
+        .reactions {
+            position: absolute;
+            bottom: -15px;
+            right: 0;
+            display: flex;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .message:hover .reactions {
+            opacity: 1;
+        }
+
+        .reaction-btn {
+            background: rgba(30,30,45,0.9);
+            border: none;
+            border-radius: 20px;
+            padding: 2px 6px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 10px;
+            padding: 12px;
+            background: rgba(30, 30, 45, 0.9);
+            border-radius: 40px;
+            margin: 12px;
+        }
+
+        .chat-input input {
+            flex: 1;
+            background: none;
+            border: none;
+            color: white;
+            padding: 10px;
+            font-size: 16px;
+            outline: none;
+        }
+
+        .timer {
+            font-size: 48px;
+            font-weight: 800;
+            font-family: monospace;
+            text-align: center;
+            margin: 20px 0;
+            background: linear-gradient(135deg, #ff2d55, #ff6b6b);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        /* Profile Components */
+        .profile-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff2d55, #ff6b6b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+        }
+
+        .profile-card {
+            background: rgba(30, 30, 45, 0.9);
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 45, 85, 0.08);
+        }
+
+        .profile-badge {
+            font-size: 11px;
+            color: #ff2d55;
+            background: rgba(255,45,85,0.15);
+            padding: 4px 8px;
+            border-radius: 12px;
+            display: inline-block;
+        }
+
+        .romantic-badge {
+            background: linear-gradient(135deg, #ff2d55, #ff6b6b);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            display: inline-block;
+            margin-left: 8px;
+        }
+
+        .friend-badge {
+            background: rgba(74, 106, 154, 0.8);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            display: inline-block;
+            margin-left: 8px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+
+        .like-btn {
+            background: none;
+            border: 1.5px solid #ff2d55;
+            color: #ff2d55;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .like-btn.liked {
+            background: linear-gradient(135deg, #ff2d55, #ff6b6b);
+            color: white;
+            border: none;
+        }
+
+        .chat-btn {
+            background: rgba(74, 74, 106, 0.8);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            flex: 1;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #ff2d55, #ff6b6b);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .btn-secondary {
+            background: rgba(42, 42, 58, 0.9);
+        }
+
+        .gender-selector {
+            display: flex;
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .gender-option {
+            flex: 1;
+            padding: 14px;
+            background: rgba(30, 30, 45, 0.9);
+            border-radius: 40px;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid rgba(255,45,85,0.15);
+        }
+
+        .gender-option.selected {
+            background: linear-gradient(135deg, #ff2d55, #ff6b6b);
+        }
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+        }
+
+        .chip {
+            padding: 8px 16px;
+            background: rgba(30, 30, 45, 0.9);
+            border-radius: 30px;
+            font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+            border: 1px solid rgba(255,45,85,0.15);
+        }
+
+        .chip.active {
+            background: linear-gradient(135deg, #ff2d55, #ff6b6b);
+            color: white;
+        }
+
+        /* Post Components */
+        .post-card {
+            background: rgba(30, 30, 45, 0.9);
+            border-radius: 20px;
+            padding: 16px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 45, 85, 0.08);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff2d55, #ff6b6b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-right: 12px;
+        }
+
+        .post-content {
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 12px;
+        }
+
+        .post-stats {
+            display: flex;
+            gap: 20px;
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255,45,85,0.08);
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 20px;
+        }
+
+        .post-action-btn {
+            background: none;
+            border: none;
+            color: #888;
+            font-size: 14px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .post-action-btn.liked {
+            color: #ff2d55;
+        }
+
+        .comments-section {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255,45,85,0.08);
+        }
+
+        .comment {
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .add-comment {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .comment-input {
+            flex: 1;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,45,85,0.15);
+            border-radius: 20px;
+            padding: 8px 12px;
+            color: white;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .comment-btn {
+            background: linear-gradient(135deg, #ff2d55, #ff6b6b);
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 100px;
+            left: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.95);
+            padding: 14px 20px;
+            border-radius: 60px;
+            text-align: center;
+            font-size: 14px;
+            z-index: 200;
+            transform: translateY(100px);
+            transition: transform 0.3s;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+        }
+
+        .notification {
+            position: fixed;
+            top: 60px;
+            right: 20px;
+            left: 20px;
+            max-width: 460px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #ff2d55, #ff6b6b);
+            padding: 12px 16px;
+            border-radius: 16px;
+            z-index: 200;
+            transform: translateX(400px);
+            transition: transform 0.3s;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .completion-bar {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            height: 8px;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+
+        .completion-fill {
+            background: linear-gradient(90deg, #ff2d55, #ff6b6b);
+            height: 100%;
+            transition: width 0.3s;
+        }
+
+        .leaderboard-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-bottom: 1px solid rgba(255,45,85,0.08);
+        }
+
+        .rank-badge {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff2d55, #ff6b6b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 8px 12px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            width: fit-content;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+
+        .conversation-item {
+            background: rgba(30, 30, 45, 0.9);
+            border-radius: 16px;
+            padding: 12px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            border: 1px solid rgba(255,45,85,0.08);
+        }
+
+        select, input, textarea {
+            background: rgba(30,30,45,0.9);
+            color: white;
+            border: 1px solid rgba(255,45,85,0.15);
+            padding: 12px;
+            border-radius: 40px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<div class="app">
+    <!-- Live Activity Ticker -->
+    <div class="ticker">
+        <div class="ticker-content" id="ticker">
+            🔥 247 online • ✨ Sophia matched with James • 🌟 Riley joined • 💕 12 new matches
+        </div>
+    </div>
+
+    <div class="content">
+        <!-- Profile Page - TalkLife Style -->
+        <div id="page0" class="page">
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <div class="profile-avatar-large" id="profileAvatar">👤</div>
+                <h2 id="profileName">Alex Morgan</h2>
+                <p id="profileBio" style="opacity: 0.8; margin-top: 8px;">✨ Looking for meaningful connections ✨</p>
+                <div class="badge-container">
+                    <span class="achievement-badge">🔥 7 day streak</span>
+                    <span class="achievement-badge">💕 12 matches</span>
+                    <span class="achievement-badge">⭐ Level 3</span>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <div class="stat-number" id="statMatches">0</div>
+                    <div class="stat-label">Matches</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="statPosts">0</div>
+                    <div class="stat-label">Posts</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="statStreak">0</div>
+                    <div class="stat-label">Day Streak</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number" id="statVisitors">0</div>
+                    <div class="stat-label">Visitors</div>
+                </div>
+            </div>
+
+            <!-- Streak Card -->
+            <div class="streak-card card">
+                <div class="streak-fire">🔥</div>
+                <h3 id="streakCount">0 Day Streak!</h3>
+                <p>Login tomorrow for day <span id="nextStreak">1</span>!</p>
+                <div id="chestReward" style="display: none;">🎁 Chest opened! +10 coins!</div>
+            </div>
+
+            <!-- Profile Completion -->
+            <div class="card">
+                <h4>Profile Strength</h4>
+                <div class="completion-bar">
+                    <div class="completion-fill" id="completionFill" style="width: 72%"></div>
+                </div>
+                <p id="completionText" style="margin-top: 8px;">72% complete — add a bio to attract more matches.</p>
+                <button class="btn-secondary btn" id="completeProfileBtn" style="margin-top: 12px;">Complete Profile →</button>
+            </div>
+
+            <!-- Visitors -->
+            <div class="card">
+                <h4>👀 Who viewed you</h4>
+                <div id="visitorsList"></div>
+            </div>
+
+            <!-- Leaderboard -->
+            <div class="card">
+                <h4>🏆 Top Streaks</h4>
+                <div id="leaderboardList"></div>
+            </div>
+
+            <!-- Coins -->
+            <div class="card">
+                <h4>💰 Your Balance</h4>
+                <p style="font-size: 32px; font-weight: bold;" id="coinBalance">0</p>
+                <button class="btn-secondary btn" id="buyCoinsBtn">Buy Coins (Telegram Stars)</button>
+            </div>
+        </div>
+
+        <!-- Dating Page -->
+        <div id="page1" class="page active">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px;">
+                <h2 style="font-size: 28px; font-weight: 700;">Date 💕</h2>
+                <span class="status-badge" id="roomStatusText" style="background: rgba(255,45,85,0.15); padding: 6px 12px; border-radius: 20px; font-size: 12px;">Finding dates...</span>
+            </div>
+
+            <div id="joinScreen">
+                <div class="card">
+                    <div style="text-align: center; font-size: 64px; margin-bottom: 16px;">💕</div>
+                    <h3 style="text-align: center; margin-bottom: 20px;">Romantic 3v3 Dating</h3>
+                    <p style="text-align: center; opacity: 0.7; margin-bottom: 24px;">Men & Women only • 3 minutes • Find your spark ✨</p>
+                    
+                    <div class="gender-selector">
+                        <div class="gender-option" data-gender="male">👨 Gentleman</div>
+                        <div class="gender-option" data-gender="female">👩 Lady</div>
+                    </div>
+                    
+                    <button class="btn" id="joinBtn">Find a Date →</button>
+                </div>
+                
+                <div class="card" style="text-align: center;">
+                    <div id="queueCount">Looking for romantic connections...</div>
+                    <div style="font-size: 12px; margin-top: 12px; opacity: 0.5;">✨ Men date women • Women date men</div>
+                </div>
+            </div>
+
+            <div id="chatScreen" style="display: none;">
+                <div class="card" style="text-align: center;">
+                    <div class="timer" id="timer">03:00</div>
+                    <div style="font-size: 14px; opacity: 0.7;">Romantic chat • Be yourself 💕</div>
+                </div>
+                
+                <div class="chat-container">
+                    <div class="messages" id="messages">
+                        <div class="message received">✨ Welcome to your romantic date! 3 minutes to connect! ✨</div>
+                    </div>
+                    <div class="chat-input">
+                        <input type="text" id="messageInput" placeholder="Say something romantic..." autocomplete="off">
+                        <button id="sendBtn" style="background: none; border: none; color: #ff2d55; font-size: 24px; padding: 0 12px;">➤</button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="votingScreen" style="display: none;">
+                <div class="card" style="text-align: center;">
+                    <h3 style="margin-bottom: 20px;">💕 Who stole your heart?</h3>
+                    <div id="voteOptions"></div>
+                    <button class="btn" id="submitVoteBtn" style="margin-top: 20px;">Choose →</button>
+                </div>
+            </div>
+
+            <div id="resultScreen" style="display: none;">
+                <div class="card" style="text-align: center;">
+                    <div style="font-size: 80px; margin-bottom: 20px;" id="resultEmoji">🤞</div>
+                    <h3 id="resultText">Checking...</h3>
+                    <button class="btn btn-secondary" id="newGameBtn" style="margin-top: 24px;">New Date →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Friends Page -->
+        <div id="page2" class="page">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px;">
+                <h2 style="font-size: 28px; font-weight: 700;">Friends 🧠</h2>
+                <span class="status-badge" id="mbtiBadge" style="background: rgba(255,45,85,0.15); padding: 6px 12px; border-radius: 20px; font-size: 12px;">INFJ</span>
+            </div>
+
+            <div class="card">
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <select id="mbtiSelect" style="flex: 1;">
+                        <option>INTJ</option><option>INTP</option><option>ENTJ</option><option>ENTP</option>
+                        <option selected>INFJ</option><option>INFP</option><option>ENFJ</option><option>ENFP</option>
+                        <option>ISTJ</option><option>ISFJ</option><option>ESTJ</option><option>ESFJ</option>
+                        <option>ISTP</option><option>ISFP</option><option>ESTP</option><option>ESFP</option>
+                    </select>
+                    <select id="ageSelect">
+                        <option>18-24</option><option>25-32</option><option>33-40</option><option>40+</option>
+                    </select>
+                    <button class="btn" id="updateProfileBtn" style="width: auto; padding: 12px 20px;">Save</button>
+                </div>
+            </div>
+
+            <div class="filters">
+                <div class="chip active" data-filter="all">All Friends</div>
+                <div class="chip" data-filter="male">Men</div>
+                <div class="chip" data-filter="female">Women</div>
+                <div class="chip" data-filter="nonbinary">Non-binary</div>
+            </div>
+
+            <div id="profilesList"></div>
+        </div>
+
+        <!-- Feed Page -->
+        <div id="page3" class="page">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px;">
+                <h2 style="font-size: 28px; font-weight: 700;">Feed 📱</h2>
+                <span class="status-badge" id="postCount" style="background: rgba(255,45,85,0.15); padding: 6px 12px; border-radius: 20px; font-size: 12px;">0 posts</span>
+            </div>
+
+            <div style="background: rgba(30,30,45,0.9); border-radius: 20px; padding: 16px; margin-bottom: 20px;">
+                <textarea id="postContent" rows="3" placeholder="Share something with your friends... 🌟" style="width: 100%; margin-bottom: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,45,85,0.15); border-radius: 16px; padding: 12px; color: white;"></textarea>
+                <button class="btn" id="createPostBtn">Create Post ✨</button>
+            </div>
+
+            <div id="postsList"></div>
+        </div>
+
+        <!-- Chats Page -->
+        <div id="page4" class="page">
+            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 20px;">
+                <h2 style="font-size: 28px; font-weight: 700;">Chats 💬</h2>
+                <span class="status-badge" id="conversationCount" style="background: rgba(255,45,85,0.15); padding: 6px 12px; border-radius: 20px; font-size: 12px;">0 chats</span>
+            </div>
+            <div id="conversationsList"></div>
+            <div id="activeChatView" style="display: none;">
+                <div class="chat-container" style="height: 550px;">
+                    <div class="messages" id="chatMessages"></div>
+                    <div class="chat-input">
+                        <input id="chatInput" placeholder="Type a message..." autocomplete="off">
+                        <button id="sendChatBtn" style="background: none; border: none; color: #ff2d55; font-size: 24px; padding: 0 12px;">➤</button>
+                    </div>
+                </div>
+                <button id="backToConversations" class="btn-secondary btn" style="margin-top: 12px;">← Back</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="tab-bar">
+        <button class="tab-item" data-page="0"><span class="tab-icon">👤</span><span>Me</span></button>
+        <button class="tab-item active" data-page="1"><span class="tab-icon">💕</span><span>Date</span></button>
+        <button class="tab-item" data-page="2"><span class="tab-icon">🧠</span><span>Friends</span></button>
+        <button class="tab-item" data-page="3"><span class="tab-icon">📱</span><span>Feed</span></button>
+        <button class="tab-item" data-page="4"><span class="tab-icon">💬</span><span>Chats</span><span id="chatBadge" class="badge-count" style="display: none;">0</span></button>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+<div id="notification" class="notification"></div>
+
+<script>
+    // ========== FRIENDS PROFILES ==========
+    const friendProfiles = [
+        { id: 1, name: 'Alexander Chen', mbti: 'INFJ', gender: 'male', age: '25-32', bio: 'Deep conversations, art, and psychology. Looking for meaningful friendships.', avatar: '🌊', occupation: 'Psychologist', interests: ['Meditation', 'Writing', 'Philosophy'], online: true },
+        { id: 2, name: 'Jamie Kaelen', mbti: 'INFJ', gender: 'nonbinary', age: '18-24', bio: 'Empath, writer, coffee addict. Let\'s be friends!', avatar: '✨', occupation: 'Student', interests: ['Poetry', 'Volunteering', 'Travel'], online: true },
+        { id: 3, name: 'Taylor Morgan', mbti: 'ENFP', gender: 'female', age: '25-32', bio: 'Adventure seeker, dog mom. Looking for hiking buddies!', avatar: '🌸', occupation: 'Marketing', interests: ['Hiking', 'Photography', 'Dancing'], online: false },
+        { id: 4, name: 'Jordan Reeves', mbti: 'INTJ', gender: 'male', age: '33-40', bio: 'Strategist, chess player. Looking for intellectual friends.', avatar: '♟️', occupation: 'Entrepreneur', interests: ['Chess', 'Coding', 'Investing'], online: true },
+        { id: 5, name: 'Casey Martinez', mbti: 'INFP', gender: 'female', age: '18-24', bio: 'Poet, dreamer. Looking for creative friends!', avatar: '⭐', occupation: 'Artist', interests: ['Painting', 'Astronomy', 'Music'], online: false },
+        { id: 6, name: 'Riley Santos', mbti: 'INFJ', gender: 'female', age: '25-32', bio: 'Therapist-in-training. Let\'s have deep talks!', avatar: '🌿', occupation: 'Counselor', interests: ['Yoga', 'Nature', 'Journaling'], online: true },
+        { id: 7, name: 'Dakota Fox', mbti: 'ENTP', gender: 'nonbinary', age: '25-32', bio: 'Debater, inventor. Let\'s challenge each other!', avatar: '💡', occupation: 'Engineer', interests: ['Debating', 'Gadgets', 'Sci-fi'], online: false },
+        { id: 8, name: 'Blake Anderson', mbti: 'ISFJ', gender: 'male', age: '33-40', bio: 'Loyal friend, history buff. Looking for genuine connections.', avatar: '📜', occupation: 'Teacher', interests: ['History', 'Gardening', 'Cooking'], online: true },
+        { id: 9, name: 'Quinn Parker', mbti: 'ESTP', gender: 'female', age: '18-24', bio: 'Adrenaline junkie. Looking for adventure friends!', avatar: '⚡', occupation: 'Athlete', interests: ['Skydiving', 'Travel', 'Parties'], online: true },
+        { id: 10, name: 'Sage Williams', mbti: 'INFJ', gender: 'female', age: '40+', bio: 'Life coach. Here to support and connect.', avatar: '📿', occupation: 'Coach', interests: ['Mentoring', 'Reading', 'Gardening'], online: false },
+        { id: 11, name: 'Rowan Kelly', mbti: 'INTP', gender: 'male', age: '25-32', bio: 'Logic nerd. Looking for nerdy friends!', avatar: '🤖', occupation: 'Data Scientist', interests: ['AI', 'Board games', 'Science'], online: true },
+        { id: 12, name: 'Skyler Brooks', mbti: 'ENFJ', gender: 'female', age: '25-32', bio: 'Community builder. Let\'s change the world together!', avatar: '🌟', occupation: 'Nonprofit', interests: ['Activism', 'Events', 'Networking'], online: false },
+        { id: 13, name: 'Parker Lee', mbti: 'ISTP', gender: 'male', age: '18-24', bio: 'Mechanic, adventurer. Looking for hands-on friends.', avatar: '🏍️', occupation: 'Mechanic', interests: ['Motorcycles', 'Camping', 'DIY'], online: true },
+        { id: 14, name: 'Avery Johnson', mbti: 'ESFJ', gender: 'female', age: '33-40', bio: 'Social butterfly. Let\'s grab coffee!', avatar: '💃', occupation: 'Event Planner', interests: ['Dancing', 'Cooking', 'Socializing'], online: false },
+        { id: 15, name: 'Emery White', mbti: 'INFJ', gender: 'male', age: '25-32', bio: 'Musician. Looking for creative collaborators.', avatar: '🎵', occupation: 'Musician', interests: ['Guitar', 'Songwriting', 'Concerts'], online: true },
+        { id: 16, name: 'Finley Green', mbti: 'ENTJ', gender: 'female', age: '40+', bio: 'CEO. Looking for ambitious friends.', avatar: '💼', occupation: 'Executive', interests: ['Leadership', 'Golf', 'Philanthropy'], online: true }
+    ];
+
+    // ========== ROMANTIC BOTS ==========
+    const romanticBots = {
+        male: [
+            { id: 'rm1', name: 'James', avatar: '💼', messages: ['You look beautiful tonight ✨', 'What\'s your idea of a perfect date?', 'I love sunset walks on the beach 🌅'] },
+            { id: 'rm2', name: 'Michael', avatar: '🎸', messages: ['Hey gorgeous 😊', 'You seem really interesting', 'I love romantic movies'] },
+            { id: 'rm3', name: 'David', avatar: '📚', messages: ['You caught my attention ✨', 'I\'m a hopeless romantic', 'Coffee date sometime? ☕'] }
+        ],
+        female: [
+            { id: 'rf1', name: 'Sophia', avatar: '🌸', messages: ['Hi handsome 😊', 'You seem sweet', 'I love romantic dinners'] },
+            { id: 'rf2', name: 'Emma', avatar: '💕', messages: ['Hey you ✨', 'You look interesting', 'I believe in love at first chat'] },
+            { id: 'rf3', name: 'Isabella', avatar: '🌹', messages: ['Hi there 😊', 'You seem like a gentleman', 'I love flowers and candles'] }
+        ]
+    };
+
+    // ========== APP STATE ==========
+    let user = {
+        streak: 0,
+        lastLogin: new Date().toDateString(),
+        coins: 50,
+        profileComplete: 72,
+        bio: '✨ Looking for meaningful connections ✨',
+        mbti: 'INFJ',
+        age: '25-32',
+        name: 'Alex Morgan'
+    };
+    
+    let visitors = [
+        { name: 'Sophia', avatar: '🌸', time: '2h ago', viewed: true },
+        { name: 'James', avatar: '💼', time: '5h ago', viewed: true },
+        { name: 'Emma', avatar: '💕', time: '1d ago', viewed: false },
+        { name: 'Luna', avatar: '🌙', time: '2d ago', viewed: false }
+    ];
+    
+    let matches = [];
+    let posts = [];
+    let friendLikes = [];
+    let currentConversation = null;
+    let unreadCount = 0;
+    
+    // Dating State
+    let selectedGender = null;
+    let activeBots = [];
+    let inChat = false;
+    let timeLeft = 180;
+    let currentVote = null;
+    let roomQueue = { men: 0, women: 0 };
+    
+    // Leaderboard
+    let leaderboard = [
+        { name: 'Alex', streak: 45, avatar: '🔥' },
+        { name: 'Sophia', streak: 32, avatar: '🌸' },
+        { name: 'James', streak: 28, avatar: '💼' },
+        { name: 'Emma', streak: 21, avatar: '💕' },
+        { name: 'You', streak: 0, avatar: '👤' }
+    ];
+    
+    let liveActivities = [
+        'Sophia just matched with James ✨',
+        'Riley joined the app 🌟',
+        'Emma sent a message 💬',
+        'Alex completed their profile 🎯'
+    ];
+
+    let genderFilter = 'all';
+
+    // ========== STREAK SYSTEM ==========
+    function checkStreak() {
+        let today = new Date().toDateString();
+        let last = localStorage.getItem('lastLogin');
+        let streak = parseInt(localStorage.getItem('streak') || '0');
+        
+        if (last !== today) {
+            let yesterday = new Date();
+            yesterday.setDate(yesterday.getDate() - 1);
+            let yesterdayStr = yesterday.toDateString();
+            
+            if (last === yesterdayStr) {
+                streak++;
+                if (streak === 3) { user.coins += 10; showToast('🎁 +10 coins for 3-day streak!'); }
+                if (streak === 7) { user.coins += 30; showToast('🎁 +30 coins for 7-day streak!'); }
+                if (streak === 30) { user.coins += 100; showToast('🎁 +100 coins for 30-day streak! 🎉'); }
+                
+                let chest = document.getElementById('chestReward');
+                if (chest) {
+                    chest.style.display = 'block';
+                    chest.classList.add('chest-animation');
+                    setTimeout(() => { chest.style.display = 'none'; }, 2000);
+                }
+            } else if (last !== yesterdayStr && last !== today && last !== null) {
+                streak = 0;
+                showToast('💔 Streak broken! Start again tomorrow.');
+            }
+            
+            localStorage.setItem('streak', streak);
+            localStorage.setItem('lastLogin', today);
+        }
+        
+        user.streak = streak;
+        updateProfileStats();
+    }
+    
+    function updateProfileStats() {
+        document.getElementById('streakCount').innerHTML = `${user.streak} Day Streak!`;
+        document.getElementById('nextStreak').innerHTML = user.streak + 1;
+        document.getElementById('statStreak').innerHTML = user.streak;
+        document.getElementById('statMatches').innerHTML = matches.length;
+        document.getElementById('statPosts').innerHTML = posts.length;
+        document.getElementById('statVisitors').innerHTML = visitors.filter(v => v.viewed).length;
+        
+        let youOnBoard = leaderboard.find(l => l.name === 'You');
+        if (youOnBoard) youOnBoard.streak = user.streak;
+        updateLeaderboard();
+    }
+    
+    // ========== VISITORS ==========
+    function renderVisitors() {
+        let container = document.getElementById('visitorsList');
+        if (!container) return;
+        container.innerHTML = '';
+        
+        visitors.forEach(visitor => {
+            let div = document.createElement('div');
+            div.className = 'visitor-card';
+            div.innerHTML = `
+                <div style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #ff2d55, #ff6b6b); display: flex; align-items: center; justify-content: center; font-size: 24px;">${visitor.avatar}</div>
+                <div><strong>${visitor.name}</strong><br><small>${visitor.time}</small></div>
+            `;
+            if (!visitor.viewed && user.coins < 5) {
+                div.classList.add('blurred');
+                let overlay = document.createElement('div');
+                overlay.className = 'unlock-overlay';
+                overlay.innerHTML = `<div class="unlock-btn">🔓 Unlock for 5 coins</div>`;
+                overlay.onclick = () => unlockVisitor(visitor);
+                div.appendChild(overlay);
+            } else if (!visitor.viewed && user.coins >= 5) {
+                let unlockBtn = document.createElement('button');
+                unlockBtn.textContent = '🔓 Unlock (5 coins)';
+                unlockBtn.style.cssText = 'margin-left: auto; background: #ff2d55; border: none; padding: 6px 12px; border-radius: 20px; cursor: pointer;';
+                unlockBtn.onclick = () => unlockVisitor(visitor);
+                div.appendChild(unlockBtn);
+            }
+            container.appendChild(div);
+        });
+    }
+    
+    function unlockVisitor(visitor) {
+        if (user.coins >= 5) {
+            user.coins -= 5;
+            visitor.viewed = true;
+            updateCoinDisplay();
+            renderVisitors();
+            updateProfileStats();
+            showToast(`🔓 Unlocked ${visitor.name}!`);
+        } else {
+            showToast('Not enough coins! Buy more with Telegram Stars ⭐');
+        }
+    }
+    
+    // ========== MATCH EXPIRY ==========
+    function startMatchExpiry(match) {
+        if (!match.expiryTime) {
+            match.expiryTime = Date.now() + (24 * 60 * 60 * 1000);
+        }
+        
+        let interval = setInterval(() => {
+            let remaining = match.expiryTime - Date.now();
+            if (remaining <= 0) {
+                let index = matches.findIndex(m => m.id === match.id);
+                if (index !== -1) {
+                    matches.splice(index, 1);
+                    renderConversations();
+                    updateProfileStats();
+                    sendNotification(`💔 Your match with ${match.name} expired!`, '⏰');
+                }
+                clearInterval(interval);
+            } else {
+                let hours = Math.floor(remaining / (60 * 60 * 1000));
+                let minutes = Math.floor((remaining % (60 * 60 * 1000)) / (60 * 1000));
+                match.expiryText = `${hours}h ${minutes}m left`;
+                if (hours < 1) match.urgent = true;
+                renderConversations();
+            }
+        }, 60000);
+    }
+    
+    function extendMatch(match) {
+        if (user.coins >= 10) {
+            user.coins -= 10;
+            match.expiryTime = Date.now() + (24 * 60 * 60 * 1000);
+            match.urgent = false;
+            updateCoinDisplay();
+            showToast(`✨ Extended match with ${match.name}! ✨`);
+        } else {
+            showToast('Need 10 coins to extend! ⭐');
+        }
+    }
+    
+    // ========== NOTIFICATIONS ==========
+    function sendNotification(message, emoji = '🔔') {
+        let notification = document.getElementById('notification');
+        notification.innerHTML = `${emoji} ${message}`;
+        notification.classList.add('show');
+        
+        unreadCount++;
+        let badge = document.getElementById('chatBadge');
+        if (badge) {
+            badge.style.display = 'block';
+            badge.innerHTML = unreadCount;
+        }
+        
+        setTimeout(() => notification.classList.remove('show'), 3000);
+    }
+    
+    function startRandomNotifications() {
+        let notifs = ['✨ Someone liked your profile!', '💕 New match available!', '👀 3 people viewed you today'];
+        setInterval(() => {
+            if (Math.random() > 0.7) sendNotification(notifs[Math.floor(Math.random() * notifs.length)]);
+        }, 45000);
+    }
+    
+    // ========== LIVE TICKER ==========
+    function updateTicker() {
+        setInterval(() => {
+            let random = liveActivities[Math.floor(Math.random() * liveActivities.length)];
+            let onlineCount = Math.floor(Math.random() * 200) + 150;
+            document.getElementById('ticker').innerHTML = `🔥 ${onlineCount} online • ${random} • 💕 ${matches.length} active chats`;
+        }, 10000);
+    }
+    
+    // ========== COINS ==========
+    function updateCoinDisplay() {
+        document.getElementById('coinBalance').innerHTML = user.coins;
+        localStorage.setItem('coins', user.coins);
+    }
+    
+    // ========== LEADERBOARD ==========
+    function updateLeaderboard() {
+        let sorted = [...leaderboard].sort((a,b) => b.streak - a.streak);
+        let container = document.getElementById('leaderboardList');
+        if (container) {
+            container.innerHTML = sorted.slice(0, 5).map((u, idx) => `
+                <div class="leaderboard-item">
+                    <div class="rank-badge">#${idx+1}</div>
+                    <div>${u.avatar} ${u.name}</div>
+                    <div style="margin-left: auto;">🔥 ${u.streak} days</div>
+                </div>
+            `).join('');
+        }
+    }
+    
+    // ========== DATING FUNCTIONS ==========
+    function initializeRomanticRoom() {
+        if (selectedGender === 'male') {
+            activeBots = [...romanticBots.female];
+            roomQueue.men = 1;
+            roomQueue.women = activeBots.length;
+        } else {
+            activeBots = [...romanticBots.male];
+            roomQueue.women = 1;
+            roomQueue.men = activeBots.length;
+        }
+        document.getElementById('queueCount').innerHTML = `👨 ${roomQueue.men} men • 👩 ${roomQueue.women} women`;
+    }
+    
+    function startRomanticChat() {
+        document.getElementById('joinScreen').style.display = 'none';
+        document.getElementById('chatScreen').style.display = 'block';
+        inChat = true;
+        timeLeft = 180;
+        
+        let timerDisplay = document.getElementById('timer');
+        let timerInt = setInterval(() => {
+            if (timeLeft <= 0) {
+                clearInterval(timerInt);
+                inChat = false;
+                document.getElementById('chatScreen').style.display = 'none';
+                document.getElementById('votingScreen').style.display = 'block';
+                
+                let voteDiv = document.getElementById('voteOptions');
+                voteDiv.innerHTML = '';
+                activeBots.forEach((bot, i) => {
+                    let btn = document.createElement('button');
+                    btn.textContent = `${bot.avatar} ${bot.name}`;
+                    btn.style.cssText = 'background: rgba(30,30,45,0.9); border: 1px solid rgba(255,45,85,0.15); padding: 14px; margin: 8px 0; border-radius: 40px; color: white; width: 100%; text-align: left; padding-left: 20px; cursor: pointer;';
+                    btn.onclick = () => {
+                        document.querySelectorAll('#voteOptions button').forEach(b => b.style.background = 'rgba(30,30,45,0.9)');
+                        btn.style.background = 'linear-gradient(135deg, #ff2d55, #ff6b6b)';
+                        currentVote = i;
+                    };
+                    voteDiv.appendChild(btn);
+                });
+            } else {
+                timeLeft--;
+                timerDisplay.innerHTML = `${Math.floor(timeLeft/60)}:${(timeLeft%60).toString().padStart(2,'0')}`;
+            }
+        }, 1000);
+        
+        setTimeout(() => addMessage(`Hey everyone! 👋`, 'received', activeBots[0]?.name), 1000);
+        setTimeout(() => addMessage(`This should be fun!`, 'received', activeBots[1]?.name), 3000);
+    }
+    
+    function addMessage(text, type, senderName = '') {
+        let messagesDiv = document.getElementById('messages');
+        let messageDiv = document.createElement('div');
+        messageDiv.className = `message ${type}`;
+        if (type === 'received' && senderName) {
+            messageDiv.innerHTML = `<strong>${senderName}</strong><br>${text}`;
+        } else {
+            messageDiv.innerHTML = text;
+        }
+        messagesDiv.appendChild(messageDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+    
+    // ========== FRIENDS FUNCTIONS ==========
+    function renderFriendProfiles() {
+        let container = document.getElementById('profilesList');
+        if (!container) return;
+        container.innerHTML = '';
+        
+        let filtered = friendProfiles.filter(p => {
+            if (p.mbti !== user.mbti) return false;
+            if (genderFilter !== 'all' && p.gender !== genderFilter) return false;
+            if (p.age !== user.age) return false;
+            return true;
+        });
+        
+        if (filtered.length === 0) {
+            container.innerHTML = '<div class="card" style="text-align: center;">No friends found 🔍<br><small>Try different filters</small></div>';
+            return;
+        }
+        
+        filtered.forEach(profile => {
+            let isFriend = friendLikes.includes(profile.id);
+            let div = document.createElement('div');
+            div.className = 'profile-card';
+            div.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #ff2d55, #ff6b6b); display: flex; align-items: center; justify-content: center; font-size: 24px;">${profile.avatar}</div>
+                    <div style="flex: 1;">
+                        <h4>${profile.name}, ${profile.age}</h4>
+                        <div><span class="profile-badge">${profile.mbti}</span> • ${profile.gender === 'male' ? '👨' : profile.gender === 'female' ? '👩' : '🌈'} • ${profile.occupation}</div>
+                        <div style="font-size: 13px; margin-top: 6px;">"${profile.bio}"</div>
+                    </div>
+                </div>
+                <div class="action-buttons">
+                    <button class="like-btn ${isFriend ? 'liked' : ''}" data-id="${profile.id}">${isFriend ? '❤️ Friend' : '🤝 Add Friend'}</button>
+                    <button class="chat-btn" data-chat="${profile.id}">💬 Chat</button>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+        
+        document.querySelectorAll('.like-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                let id = parseInt(btn.dataset.id);
+                let profile = friendProfiles.find(p => p.id === id);
+                if (friendLikes.includes(id)) {
+                    friendLikes = friendLikes.filter(i => i !== id);
+                    showToast(`Removed friend request from ${profile.name}`);
+                } else {
+                    friendLikes.push(id);
+                    showToast(`✨ Friend request sent to ${profile.name}! ✨`);
+                    setTimeout(() => {
+                        if (Math.random() > 0.3) {
+                            showToast(`🎉 ${profile.name} accepted your friend request! 🎉`);
+                            let newMatch = {
+                                id: profile.id, name: profile.name, avatar: profile.avatar, type: 'friend',
+                                messages: [{ text: `🤝 You and ${profile.name} are now friends! 🤝`, sent: false, time: new Date() }],
+                                lastMessage: `You became friends with ${profile.name}!`,
+                                expiryTime: Date.now() + 86400000
+                            };
+                            if (!matches.find(m => m.id === profile.id)) {
+                                matches.push(newMatch);
+                                startMatchExpiry(newMatch);
+                                renderConversations();
+                                updateProfileStats();
+                            }
+                        }
+                    }, 1000);
+                }
+                renderFriendProfiles();
+            });
+        });
+        
+        document.querySelectorAll('.chat-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                let id = parseInt(btn.dataset.chat);
+                let profile = friendProfiles.find(p => p.id === id);
+                if (!matches.find(m => m.id === id)) {
+                    let newMatch = {
+                        id: profile.id, name: profile.name, avatar: profile.avatar, type: 'friend',
+                        messages: [{ text: `👋 Hi! I'm ${profile.name}. Nice to meet you!`, sent: false, time: new Date() }],
+                        lastMessage: `Started chatting with ${profile.name}`,
+                        expiryTime: Date.now() + 86400000
+                    };
+                    matches.push(newMatch);
+                    startMatchExpiry(newMatch);
+                    renderConversations();
+                    updateProfileStats();
+                }
+                document.querySelector('[data-page="4"]').click();
+                setTimeout(() => openConversation(id), 100);
+            });
+        });
+    }
+    
+    // ========== POSTS ==========
+    function renderPosts() {
+        let container = document.getElementById('postsList');
+        if (!container) return;
+        container.innerHTML = '';
+        document.getElementById('postCount').innerHTML = `${posts.length} posts`;
+        
+        if (posts.length === 0) {
+            container.innerHTML = '<div class="card" style="text-align: center;">No posts yet 🌟<br><small>Share something with your friends!</small></div>';
+            return;
+        }
+        
+        posts.slice().reverse().forEach(post => {
+            let div = document.createElement('div');
+            div.className = 'post-card';
+            div.innerHTML = `
+                <div class="post-header">
+                    <div class="post-avatar">${post.avatar}</div>
+                    <div><strong>${post.name}</strong><br><span style="font-size: 11px; opacity: 0.6;">${post.time}</span></div>
+                </div>
+                <div class="post-content">${post.content}</div>
+                <div class="post-stats">
+                    <span>❤️ ${post.likes} likes</span>
+                    <span>💬 ${post.comments.length} comments</span>
+                </div>
+                <div class="post-actions">
+                    <button class="post-action-btn ${post.userLiked ? 'liked' : ''}" data-action="like" data-id="${post.id}">${post.userLiked ? '❤️' : '🤍'} Like</button>
+                    <button class="post-action-btn" data-action="comment" data-id="${post.id}">💬 Comment</button>
+                </div>
+                <div class="comments-section" id="comments-${post.id}" style="display: none;">
+                    ${post.comments.map(c => `<div class="comment"><strong>${c.name}</strong> ${c.text}</div>`).join('')}
+                    <div class="add-comment">
+                        <input type="text" class="comment-input" id="comment-input-${post.id}" placeholder="Write a comment...">
+                        <button class="comment-btn" data-post="${post.id}">Post</button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+        
+        document.querySelectorAll('[data-action="like"]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                let postId = parseInt(btn.dataset.id);
+                let post = posts.find(p => p.id === postId);
+                if (post) {
+                    post.userLiked ? post.likes-- : post.likes++;
+                    post.userLiked = !post.userLiked;
+                    renderPosts();
+                }
+            });
+        });
+        
+        document.querySelectorAll('[data-action="comment"]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                let postId = parseInt(btn.dataset.id);
+                let section = document.getElementById(`comments-${postId}`);
+                section.style.display = section.style.display === 'none' ? 'block' : 'none';
+            });
+        });
+        
+        document.querySelectorAll('.comment-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                let postId = parseInt(btn.dataset.post);
+                let input = document.getElementById(`comment-input-${postId}`);
+                let text = input.value.trim();
+                if (text) {
+                    let post = posts.find(p => p.id === postId);
+                    post.comments.push({ name: 'You', text: text });
+                    input.value = '';
+                    renderPosts();
+                    document.getElementById(`comments-${postId}`).style.display = 'block';
+                }
+            });
+        });
+    }
+    
+    // ========== CONVERSATIONS ==========
+    function renderConversations() {
+        let container = document.getElementById('conversationsList');
+        if (!container) return;
+        container.innerHTML = '';
+        document.getElementById('conversationCount').innerHTML = `${matches.length} chats`;
+        
+        if (matches.length === 0) {
+            container.innerHTML = '<div class="card" style="text-align: center;">No chats yet 💬<br><small>Try dating or adding friends!</small></div>';
+            return;
+        }
+        
+        matches.forEach(match => {
+            let div = document.createElement('div');
+            div.className = `match-card ${match.urgent ? 'urgent' : ''}`;
+            div.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #ff2d55, #ff6b6b); display: flex; align-items: center; justify-content: center; font-size: 24px;">${match.avatar}</div>
+                    <div style="flex: 1;">
+                        <strong>${match.name}</strong>
+                        ${match.type === 'romantic' ? '<span class="romantic-badge">💕 Romantic</span>' : '<span class="friend-badge">🤝 Friend</span>'}
+                        <div style="font-size: 12px;">${match.lastMessage?.substring(0, 40) || 'New match!'}</div>
+                        <div class="countdown-timer">⏰ ${match.expiryText || '24h left'}<button class="extend-btn" data-id="${match.id}">+24h (10⭐)</button></div>
+                    </div>
+                </div>
+            `;
+            div.onclick = (e) => { if (!e.target.classList.contains('extend-btn')) openConversation(match.id); };
+            container.appendChild(div);
+        });
+        
+        document.querySelectorAll('.extend-btn').forEach(btn => {
+            btn.onclick = (e) => {
+                e.stopPropagation();
+                let match = matches.find(m => m.id == btn.dataset.id);
+                if (match) extendMatch(match);
+            };
+        });
+    }
+    
+    function openConversation(id) {
+        let match = matches.find(m => m.id == id);
+        if (!match) return;
+        currentConversation = match;
+        document.getElementById('conversationsList').style.display = 'none';
+        document.getElementById('activeChatView').style.display = 'block';
+        renderChatMessages();
+    }
+    
+    function renderChatMessages() {
+        let container = document.getElementById('chatMessages');
+        if (!container || !currentConversation) return;
+        container.innerHTML = '';
+        
+        currentConversation.messages.forEach((msg, idx) => {
+            let div = document.createElement('div');
+            div.className = `message ${msg.sent ? 'sent' : 'received'}`;
+            div.innerHTML = msg.sent ? msg.text : `<strong>${currentConversation.name}</strong><br>${msg.text}`;
+            
+            let reactionsDiv = document.createElement('div');
+            reactionsDiv.className = 'reactions';
+            ['❤️', '😂', '😮', '🎉'].forEach(react => {
+                let btn = document.createElement('button');
+                btn.className = 'reaction-btn';
+                btn.innerHTML = react;
+                btn.onclick = () => {
+                    if (!currentConversation.messages[idx].reactions) currentConversation.messages[idx].reactions = {};
+                    currentConversation.messages[idx].reactions[react] = (currentConversation.messages[idx].reactions[react] || 0) + 1;
+                    renderChatMessages();
+                };
+                reactionsDiv.appendChild(btn);
+            });
+            div.appendChild(reactionsDiv);
+            container.appendChild(div);
+        });
+        container.scrollTop = container.scrollHeight;
+    }
+    
+    function sendChatMessage() {
+        let input = document.getElementById('chatInput');
+        let text = input.value.trim();
+        if (!text || !currentConversation) return;
+        
+        currentConversation.messages.push({ text: text, sent: true, time: new Date() });
+        currentConversation.lastMessage = text;
+        renderChatMessages();
+        input.value = '';
+        
+        let indicator = document.createElement('div');
+        indicator.className = 'typing-indicator';
+        indicator.id = 'typingIndicator';
+        indicator.innerHTML = '<div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div><span style="margin-left: 8px;">typing...</span>';
+        document.getElementById('chatMessages').appendChild(indicator);
+        
+        setTimeout(() => {
+            let indicatorElem = document.getElementById('typingIndicator');
+            if (indicatorElem) indicatorElem.remove();
+            let reply = currentConversation.type === 'romantic' ? 'You\'re so sweet! 💕' : 'That\'s awesome! 🤝';
+            currentConversation.messages.push({ text: reply, sent: false, time: new Date() });
+            currentConversation.lastMessage = reply;
+            renderChatMessages();
+        }, 2000);
+    }
+    
+    // ========== HELPER FUNCTIONS ==========
+    function showToast(msg) {
+        let toast = document.getElementById('toast');
+        toast.textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 2000);
+    }
+    
+    // ========== INITIALIZE ==========
+    function init() {
+        checkStreak();
+        renderVisitors();
+        updateCoinDisplay();
+        updateLeaderboard();
+        startRandomNotifications();
+        updateTicker();
+        
+        let savedCoins = localStorage.getItem('coins');
+        if (savedCoins) user.coins = parseInt(savedCoins);
+        
+        // Sample posts
+        posts.push({
+            id: 1, name: 'Sophia', avatar: '🌸', content: 'Just finished an amazing painting! Art heals the soul 🎨✨',
+            time: '2h ago', likes: 24, userLiked: false, comments: [{ name: 'Emma', text: 'Beautiful! 💕' }]
+        });
+        posts.push({
+            id: 2, name: 'James', avatar: '💼', content: 'Anyone else working from home today? Let\'s connect!',
+            time: '5h ago', likes: 18, userLiked: false, comments: [{ name: 'Sophia', text: 'Me! WFH is the best 🙌' }]
+        });
+        
+        renderPosts();
+        renderFriendProfiles();
+        renderConversations();
+        
+        // Tab switching
+        document.querySelectorAll('.tab-item').forEach(btn => {
+            btn.addEventListener('click', () => {
+                let page = parseInt(btn.dataset.page);
+                document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+                btn.classList.add('active');
+                document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+                document.getElementById(`page${page}`).classList.add('active');
+                if (page === 0) { renderVisitors(); updateLeaderboard(); updateProfileStats(); }
+                if (page === 4) { document.getElementById('chatBadge').style.display = 'none'; unreadCount = 0; }
+            });
+        });
+        
+        // Dating
+        document.querySelectorAll('.gender-option').forEach(opt => {
+            opt.addEventListener('click', () => {
+                document.querySelectorAll('.gender-option').forEach(o => o.classList.remove('selected'));
+                opt.classList.add('selected');
+                selectedGender = opt.dataset.gender;
+            });
+        });
+        
+        document.getElementById('joinBtn').addEventListener('click', () => {
+            if (!selectedGender) { showToast('👆 Select your gender first'); return; }
+            initializeRomanticRoom();
+            startRomanticChat();
+        });
+        
+        document.getElementById('submitVoteBtn').addEventListener('click', () => {
+            if (currentVote === null) { showToast('Please choose someone'); return; }
+            document.getElementById('votingScreen').style.display = 'none';
+            document.getElementById('resultScreen').style.display = 'block';
+            let isMatch = Math.random() > 0.3;
+            let selected = activeBots[currentVote];
+            if (isMatch) {
+                document.getElementById('resultEmoji').innerHTML = '💘';
+                document.getElementById('resultText').innerHTML = `🎉 ${selected.name} wants to date you too! 🎉`;
+                let newMatch = {
+                    id: selected.id, name: selected.name, avatar: selected.avatar, type: 'romantic',
+                    messages: [{ text: `💕 You matched with ${selected.name}! 💕`, sent: false, time: new Date() }],
+                    lastMessage: `You matched with ${selected.name}!`, expiryTime: Date.now() + 86400000
+                };
+                if (!matches.find(m => m.id === selected.id)) {
+                    matches.push(newMatch);
+                    startMatchExpiry(newMatch);
+                    renderConversations();
+                    updateProfileStats();
+                }
+                sendNotification(`✨ New match with ${selected.name}! ✨`, '💕');
+            } else {
+                document.getElementById('resultEmoji').innerHTML = '😔';
+                document.getElementById('resultText').innerHTML = `${selected.name} wasn't ready this time`;
+            }
+        });
+        
+        document.getElementById('newGameBtn').addEventListener('click', () => {
+            document.getElementById('resultScreen').style.display = 'none';
+            document.getElementById('joinScreen').style.display = 'block';
+            currentVote = null;
+            document.querySelectorAll('.gender-option').forEach(o => o.classList.remove('selected'));
+            selectedGender = null;
+        });
+        
+        document.getElementById('sendBtn').addEventListener('click', () => {
+            let input = document.getElementById('messageInput');
+            let text = input.value.trim();
+            if (text && inChat) {
+                addMessage(text, 'sent', 'You');
+                input.value = '';
+                setTimeout(() => {
+                    if (inChat) {
+                        let randomBot = activeBots[Math.floor(Math.random() * activeBots.length)];
+                        addMessage('That\'s sweet! 💕', 'received', randomBot.name);
+                    }
+                }, 1500);
+            }
+        });
+        
+        // Friends
+        document.getElementById('updateProfileBtn').addEventListener('click', () => {
+            user.mbti = document.getElementById('mbtiSelect').value;
+            user.age = document.getElementById('ageSelect').value;
+            document.getElementById('mbtiBadge').innerHTML = user.mbti;
+            renderFriendProfiles();
+        });
+        
+        document.querySelectorAll('.chip').forEach(chip => {
+            chip.addEventListener('click', () => {
+                document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+                chip.classList.add('active');
+                genderFilter = chip.dataset.filter;
+                renderFriendProfiles();
+            });
+        });
+        
+        // Feed
+        document.getElementById('createPostBtn').addEventListener('click', () => {
+            let content = document.getElementById('postContent').value.trim();
+            if (!content) { showToast('Write something first!'); return; }
+            posts.push({
+                id: Date.now(), name: 'You', avatar: '👤', content: content,
+                time: new Date().toLocaleString(), likes: 0, userLiked: false, comments: []
+            });
+            document.getElementById('postContent').value = '';
+            renderPosts();
+            updateProfileStats();
+            showToast('✨ Post created! ✨');
+        });
+        
+        // Profile
+        document.getElementById('completeProfileBtn').addEventListener('click', () => {
+            let bio = prompt('Add a bio to attract more matches:');
+            if (bio) { user.profileComplete = 100; user.bio = bio; document.getElementById('completionFill').style.width = '100%'; document.getElementById('completionText').innerHTML = '✅ Complete! You\'re ready to match!'; user.coins += 20; updateCoinDisplay(); updateProfileStats(); showToast('🎉 Profile complete! +20 coins!'); }
+        });
+        
+        document.getElementById('buyCoinsBtn').addEventListener('click', () => {
+            let amount = prompt('Demo: How many coins? (10 coins = 1 Star)');
+            if (amount) { user.coins += parseInt(amount); updateCoinDisplay(); showToast(`✨ +${amount} coins!`); }
+        });
+        
+        // Chats
+        document.getElementById('backToConversations').addEventListener('click', () => {
+            document.getElementById('conversationsList').style.display = 'block';
+            document.getElementById('activeChatView').style.display = 'none';
+            currentConversation = null;
+            renderConversations();
+        });
+        
+        document.getElementById('sendChatBtn').addEventListener('click', sendChatMessage);
+        document.getElementById('chatInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') sendChatMessage(); });
+        
+        updateProfileStats();
+    }
+    
+    init();
+    
+    if (window.Telegram?.WebApp) {
+        window.Telegram.WebApp.expand();
+        window.Telegram.WebApp.enableClosingConfirmation();
+    }
+</script>
+</body>
+</html>
