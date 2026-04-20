@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
     <title>Pulse — Connect Deeper</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
@@ -10,12 +10,14 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
         }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background: #0a0a0a;
             color: #fff;
+            overflow-x: hidden;
         }
 
         .app {
@@ -24,9 +26,10 @@
             background: #0a0a0a;
             min-height: 100vh;
             position: relative;
+            overflow-x: hidden;
         }
 
-        /* Live Activity Ticker */
+        /* Ticker */
         .ticker {
             background: linear-gradient(90deg, #ff2d55, #ff6b6b);
             padding: 10px 16px;
@@ -35,6 +38,7 @@
             position: sticky;
             top: 0;
             z-index: 99;
+            pointer-events: none;
         }
 
         .ticker-content {
@@ -121,7 +125,22 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* TalkLife Style Profile */
+        /* Cards */
+        .card {
+            background: rgba(30, 30, 45, 0.9);
+            border-radius: 24px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid rgba(255, 45, 85, 0.08);
+            cursor: pointer;
+            transition: transform 0.1s ease;
+        }
+
+        .card:active {
+            transform: scale(0.98);
+        }
+
+        /* Profile Header */
         .profile-header {
             background: linear-gradient(135deg, #1a1a2e, #16213e);
             border-radius: 24px;
@@ -187,19 +206,15 @@
             gap: 6px;
         }
 
-        /* Cards */
-        .card {
-            background: rgba(30, 30, 45, 0.9);
-            border-radius: 24px;
-            padding: 20px;
-            margin-bottom: 16px;
-            border: 1px solid rgba(255, 45, 85, 0.08);
-        }
-
         /* Streak Card */
         .streak-card {
             background: linear-gradient(135deg, #ff2d55, #ff6b6b);
             text-align: center;
+            cursor: default;
+        }
+        
+        .streak-card:active {
+            transform: none;
         }
 
         .streak-fire {
@@ -222,6 +237,7 @@
             align-items: center;
             gap: 12px;
             position: relative;
+            cursor: pointer;
         }
 
         .visitor-card.blurred {
@@ -242,6 +258,7 @@
             border-radius: 16px;
             cursor: pointer;
             pointer-events: auto;
+            z-index: 10;
         }
 
         .unlock-btn {
@@ -250,6 +267,8 @@
             border-radius: 30px;
             font-size: 12px;
             font-weight: bold;
+            pointer-events: auto;
+            cursor: pointer;
         }
 
         /* Match Cards */
@@ -261,6 +280,11 @@
             position: relative;
             cursor: pointer;
             border: 1px solid rgba(255, 45, 85, 0.08);
+            transition: transform 0.1s ease;
+        }
+
+        .match-card:active {
+            transform: scale(0.98);
         }
 
         .match-card.urgent {
@@ -288,6 +312,7 @@
             font-size: 11px;
             cursor: pointer;
             margin-left: 8px;
+            pointer-events: auto;
         }
 
         /* Chat Components */
@@ -315,7 +340,6 @@
             border-radius: 20px;
             font-size: 15px;
             line-height: 1.4;
-            animation: slideIn 0.2s ease;
             position: relative;
         }
 
@@ -373,6 +397,15 @@
             outline: none;
         }
 
+        .chat-input button {
+            background: none;
+            border: none;
+            color: #ff2d55;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0 12px;
+        }
+
         .timer {
             font-size: 48px;
             font-weight: 800;
@@ -385,24 +418,19 @@
             color: transparent;
         }
 
-        /* Profile Components */
-        .profile-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #ff2d55, #ff6b6b);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-        }
-
+        /* Profile Card */
         .profile-card {
             background: rgba(30, 30, 45, 0.9);
             border-radius: 20px;
             padding: 16px;
             margin-bottom: 12px;
             border: 1px solid rgba(255, 45, 85, 0.08);
+            cursor: pointer;
+            transition: transform 0.1s ease;
+        }
+
+        .profile-card:active {
+            transform: scale(0.98);
         }
 
         .profile-badge {
@@ -447,6 +475,7 @@
             font-weight: 600;
             cursor: pointer;
             flex: 1;
+            transition: all 0.2s;
         }
 
         .like-btn.liked {
@@ -464,6 +493,7 @@
             font-size: 13px;
             cursor: pointer;
             flex: 1;
+            transition: all 0.2s;
         }
 
         .btn {
@@ -476,6 +506,11 @@
             font-size: 16px;
             cursor: pointer;
             width: 100%;
+            transition: transform 0.1s ease;
+        }
+
+        .btn:active {
+            transform: scale(0.97);
         }
 
         .btn-secondary {
@@ -496,6 +531,7 @@
             text-align: center;
             cursor: pointer;
             border: 1px solid rgba(255,45,85,0.15);
+            transition: all 0.2s;
         }
 
         .gender-option.selected {
@@ -517,6 +553,7 @@
             white-space: nowrap;
             cursor: pointer;
             border: 1px solid rgba(255,45,85,0.15);
+            transition: all 0.2s;
         }
 
         .chip.active {
@@ -583,6 +620,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
+            transition: all 0.2s;
         }
 
         .post-action-btn.liked {
@@ -643,6 +681,7 @@
             z-index: 200;
             transform: translateY(100px);
             transition: transform 0.3s;
+            pointer-events: none;
         }
 
         .toast.show {
@@ -662,6 +701,7 @@
             z-index: 200;
             transform: translateX(400px);
             transition: transform 0.3s;
+            cursor: pointer;
         }
 
         .notification.show {
@@ -730,6 +770,11 @@
             margin-bottom: 8px;
             cursor: pointer;
             border: 1px solid rgba(255,45,85,0.08);
+            transition: transform 0.1s ease;
+        }
+
+        .conversation-item:active {
+            transform: scale(0.98);
         }
 
         select, input, textarea {
@@ -740,11 +785,28 @@
             border-radius: 40px;
             font-size: 14px;
         }
+
+        button {
+            cursor: pointer;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.05);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #ff2d55;
+            border-radius: 4px;
+        }
     </style>
 </head>
 <body>
 <div class="app">
-    <!-- Live Activity Ticker -->
     <div class="ticker">
         <div class="ticker-content" id="ticker">
             🔥 247 online • ✨ Sophia matched with James • 🌟 Riley joined • 💕 12 new matches
@@ -752,12 +814,11 @@
     </div>
 
     <div class="content">
-        <!-- Profile Page - TalkLife Style -->
+        <!-- Profile Page -->
         <div id="page0" class="page">
-            <!-- Profile Header -->
             <div class="profile-header">
                 <div class="profile-avatar-large" id="profileAvatar">👤</div>
-                <h2 id="profileName">Alex Morgan</h2>
+                <h2 id="profileName">Loading...</h2>
                 <p id="profileBio" style="opacity: 0.8; margin-top: 8px;">✨ Looking for meaningful connections ✨</p>
                 <div class="badge-container">
                     <span class="achievement-badge" id="streakBadge">🔥 0 day streak</span>
@@ -766,7 +827,6 @@
                 </div>
             </div>
 
-            <!-- Stats -->
             <div class="profile-stats">
                 <div class="stat-item">
                     <div class="stat-number" id="statMatches">0</div>
@@ -786,7 +846,6 @@
                 </div>
             </div>
 
-            <!-- Streak Card -->
             <div class="streak-card card">
                 <div class="streak-fire">🔥</div>
                 <h3 id="streakCount">0 Day Streak!</h3>
@@ -794,7 +853,6 @@
                 <div id="chestReward" style="display: none;">🎁 Chest opened! +10 coins!</div>
             </div>
 
-            <!-- Profile Completion -->
             <div class="card">
                 <h4>Profile Strength</h4>
                 <div class="completion-bar">
@@ -804,19 +862,16 @@
                 <button class="btn-secondary btn" id="completeProfileBtn" style="margin-top: 12px;">Complete Profile →</button>
             </div>
 
-            <!-- Visitors -->
             <div class="card">
                 <h4>👀 Who viewed you</h4>
                 <div id="visitorsList"></div>
             </div>
 
-            <!-- Leaderboard -->
             <div class="card">
                 <h4>🏆 Top Streaks</h4>
                 <div id="leaderboardList"></div>
             </div>
 
-            <!-- Coins -->
             <div class="card">
                 <h4>💰 Your Balance</h4>
                 <p style="font-size: 32px; font-weight: bold;" id="coinBalance">0</p>
@@ -863,7 +918,7 @@
                     </div>
                     <div class="chat-input">
                         <input type="text" id="messageInput" placeholder="Say something romantic..." autocomplete="off">
-                        <button id="sendBtn" style="background: none; border: none; color: #ff2d55; font-size: 24px; padding: 0 12px;">➤</button>
+                        <button id="sendBtn">➤</button>
                     </div>
                 </div>
             </div>
@@ -925,7 +980,7 @@
             </div>
 
             <div style="background: rgba(30,30,45,0.9); border-radius: 20px; padding: 16px; margin-bottom: 20px;">
-                <textarea id="postContent" rows="3" placeholder="Share something with your friends... 🌟" style="width: 100%; margin-bottom: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,45,85,0.15); border-radius: 16px; padding: 12px; color: white;"></textarea>
+                <textarea id="postContent" rows="3" placeholder="Share something with your friends... 🌟" style="width: 100%; margin-bottom: 12px; background: rgba(0,0,0,0.3); border: 1px solid rgba(255,45,85,0.15); border-radius: 16px; padding: 12px; color: white; resize: vertical;"></textarea>
                 <button class="btn" id="createPostBtn">Create Post ✨</button>
             </div>
 
@@ -944,7 +999,7 @@
                     <div class="messages" id="chatMessages"></div>
                     <div class="chat-input">
                         <input id="chatInput" placeholder="Type a message..." autocomplete="off">
-                        <button id="sendChatBtn" style="background: none; border: none; color: #ff2d55; font-size: 24px; padding: 0 12px;">➤</button>
+                        <button id="sendChatBtn">➤</button>
                     </div>
                 </div>
                 <button id="backToConversations" class="btn-secondary btn" style="margin-top: 12px;">← Back</button>
@@ -970,54 +1025,49 @@
     let telegramUser = null;
     
     if (tg) {
-        tg.expand(); // Expand to full screen
-        tg.enableClosingConfirmation(); // Ask before closing
-        tg.ready(); // Notify Telegram that app is ready
+        tg.expand();
+        tg.enableClosingConfirmation();
         
-        // Get user info from Telegram
         const user = tg.initDataUnsafe?.user;
         if (user) {
             telegramUser = user;
             console.log('Telegram User:', user);
         }
         
-        // Handle theme colors
-        if (tg.themeParams) {
-            document.body.style.backgroundColor = tg.themeParams.bg_color || '#0a0a0a';
-        }
+        tg.ready();
     }
-
+    
     // ========== FRIENDS PROFILES ==========
     const friendProfiles = [
-        { id: 1, name: 'Alexander Chen', mbti: 'INFJ', gender: 'male', age: '25-32', bio: 'Deep conversations, art, and psychology. Looking for meaningful friendships.', avatar: '🌊', occupation: 'Psychologist', interests: ['Meditation', 'Writing', 'Philosophy'], online: true },
-        { id: 2, name: 'Jamie Kaelen', mbti: 'INFJ', gender: 'nonbinary', age: '18-24', bio: 'Empath, writer, coffee addict. Let\'s be friends!', avatar: '✨', occupation: 'Student', interests: ['Poetry', 'Volunteering', 'Travel'], online: true },
-        { id: 3, name: 'Taylor Morgan', mbti: 'ENFP', gender: 'female', age: '25-32', bio: 'Adventure seeker, dog mom. Looking for hiking buddies!', avatar: '🌸', occupation: 'Marketing', interests: ['Hiking', 'Photography', 'Dancing'], online: false },
-        { id: 4, name: 'Jordan Reeves', mbti: 'INTJ', gender: 'male', age: '33-40', bio: 'Strategist, chess player. Looking for intellectual friends.', avatar: '♟️', occupation: 'Entrepreneur', interests: ['Chess', 'Coding', 'Investing'], online: true },
-        { id: 5, name: 'Casey Martinez', mbti: 'INFP', gender: 'female', age: '18-24', bio: 'Poet, dreamer. Looking for creative friends!', avatar: '⭐', occupation: 'Artist', interests: ['Painting', 'Astronomy', 'Music'], online: false },
-        { id: 6, name: 'Riley Santos', mbti: 'INFJ', gender: 'female', age: '25-32', bio: 'Therapist-in-training. Let\'s have deep talks!', avatar: '🌿', occupation: 'Counselor', interests: ['Yoga', 'Nature', 'Journaling'], online: true },
-        { id: 7, name: 'Dakota Fox', mbti: 'ENTP', gender: 'nonbinary', age: '25-32', bio: 'Debater, inventor. Let\'s challenge each other!', avatar: '💡', occupation: 'Engineer', interests: ['Debating', 'Gadgets', 'Sci-fi'], online: false },
-        { id: 8, name: 'Blake Anderson', mbti: 'ISFJ', gender: 'male', age: '33-40', bio: 'Loyal friend, history buff. Looking for genuine connections.', avatar: '📜', occupation: 'Teacher', interests: ['History', 'Gardening', 'Cooking'], online: true },
-        { id: 9, name: 'Quinn Parker', mbti: 'ESTP', gender: 'female', age: '18-24', bio: 'Adrenaline junkie. Looking for adventure friends!', avatar: '⚡', occupation: 'Athlete', interests: ['Skydiving', 'Travel', 'Parties'], online: true },
-        { id: 10, name: 'Sage Williams', mbti: 'INFJ', gender: 'female', age: '40+', bio: 'Life coach. Here to support and connect.', avatar: '📿', occupation: 'Coach', interests: ['Mentoring', 'Reading', 'Gardening'], online: false },
-        { id: 11, name: 'Rowan Kelly', mbti: 'INTP', gender: 'male', age: '25-32', bio: 'Logic nerd. Looking for nerdy friends!', avatar: '🤖', occupation: 'Data Scientist', interests: ['AI', 'Board games', 'Science'], online: true },
-        { id: 12, name: 'Skyler Brooks', mbti: 'ENFJ', gender: 'female', age: '25-32', bio: 'Community builder. Let\'s change the world together!', avatar: '🌟', occupation: 'Nonprofit', interests: ['Activism', 'Events', 'Networking'], online: false },
-        { id: 13, name: 'Parker Lee', mbti: 'ISTP', gender: 'male', age: '18-24', bio: 'Mechanic, adventurer. Looking for hands-on friends.', avatar: '🏍️', occupation: 'Mechanic', interests: ['Motorcycles', 'Camping', 'DIY'], online: true },
-        { id: 14, name: 'Avery Johnson', mbti: 'ESFJ', gender: 'female', age: '33-40', bio: 'Social butterfly. Let\'s grab coffee!', avatar: '💃', occupation: 'Event Planner', interests: ['Dancing', 'Cooking', 'Socializing'], online: false },
-        { id: 15, name: 'Emery White', mbti: 'INFJ', gender: 'male', age: '25-32', bio: 'Musician. Looking for creative collaborators.', avatar: '🎵', occupation: 'Musician', interests: ['Guitar', 'Songwriting', 'Concerts'], online: true },
-        { id: 16, name: 'Finley Green', mbti: 'ENTJ', gender: 'female', age: '40+', bio: 'CEO. Looking for ambitious friends.', avatar: '💼', occupation: 'Executive', interests: ['Leadership', 'Golf', 'Philanthropy'], online: true }
+        { id: 1, name: 'Alexander Chen', mbti: 'INFJ', gender: 'male', age: '25-32', bio: 'Deep conversations, art, and psychology. Looking for meaningful friendships.', avatar: '🌊', occupation: 'Psychologist', online: true },
+        { id: 2, name: 'Jamie Kaelen', mbti: 'INFJ', gender: 'nonbinary', age: '18-24', bio: 'Empath, writer, coffee addict. Let\'s be friends!', avatar: '✨', occupation: 'Student', online: true },
+        { id: 3, name: 'Taylor Morgan', mbti: 'ENFP', gender: 'female', age: '25-32', bio: 'Adventure seeker, dog mom. Looking for hiking buddies!', avatar: '🌸', occupation: 'Marketing', online: false },
+        { id: 4, name: 'Jordan Reeves', mbti: 'INTJ', gender: 'male', age: '33-40', bio: 'Strategist, chess player. Looking for intellectual friends.', avatar: '♟️', occupation: 'Entrepreneur', online: true },
+        { id: 5, name: 'Casey Martinez', mbti: 'INFP', gender: 'female', age: '18-24', bio: 'Poet, dreamer. Looking for creative friends!', avatar: '⭐', occupation: 'Artist', online: false },
+        { id: 6, name: 'Riley Santos', mbti: 'INFJ', gender: 'female', age: '25-32', bio: 'Therapist-in-training. Let\'s have deep talks!', avatar: '🌿', occupation: 'Counselor', online: true },
+        { id: 7, name: 'Dakota Fox', mbti: 'ENTP', gender: 'nonbinary', age: '25-32', bio: 'Debater, inventor. Let\'s challenge each other!', avatar: '💡', occupation: 'Engineer', online: false },
+        { id: 8, name: 'Blake Anderson', mbti: 'ISFJ', gender: 'male', age: '33-40', bio: 'Loyal friend, history buff. Looking for genuine connections.', avatar: '📜', occupation: 'Teacher', online: true },
+        { id: 9, name: 'Quinn Parker', mbti: 'ESTP', gender: 'female', age: '18-24', bio: 'Adrenaline junkie. Looking for adventure friends!', avatar: '⚡', occupation: 'Athlete', online: true },
+        { id: 10, name: 'Sage Williams', mbti: 'INFJ', gender: 'female', age: '40+', bio: 'Life coach. Here to support and connect.', avatar: '📿', occupation: 'Coach', online: false },
+        { id: 11, name: 'Rowan Kelly', mbti: 'INTP', gender: 'male', age: '25-32', bio: 'Logic nerd. Looking for nerdy friends!', avatar: '🤖', occupation: 'Data Scientist', online: true },
+        { id: 12, name: 'Skyler Brooks', mbti: 'ENFJ', gender: 'female', age: '25-32', bio: 'Community builder. Let\'s change the world together!', avatar: '🌟', occupation: 'Nonprofit', online: false },
+        { id: 13, name: 'Parker Lee', mbti: 'ISTP', gender: 'male', age: '18-24', bio: 'Mechanic, adventurer. Looking for hands-on friends.', avatar: '🏍️', occupation: 'Mechanic', online: true },
+        { id: 14, name: 'Avery Johnson', mbti: 'ESFJ', gender: 'female', age: '33-40', bio: 'Social butterfly. Let\'s grab coffee!', avatar: '💃', occupation: 'Event Planner', online: false },
+        { id: 15, name: 'Emery White', mbti: 'INFJ', gender: 'male', age: '25-32', bio: 'Musician. Looking for creative collaborators.', avatar: '🎵', occupation: 'Musician', online: true },
+        { id: 16, name: 'Finley Green', mbti: 'ENTJ', gender: 'female', age: '40+', bio: 'CEO. Looking for ambitious friends.', avatar: '💼', occupation: 'Executive', online: true }
     ];
 
     // ========== ROMANTIC BOTS ==========
     const romanticBots = {
         male: [
-            { id: 'rm1', name: 'James', avatar: '💼', messages: ['You look beautiful tonight ✨', 'What\'s your idea of a perfect date?', 'I love sunset walks on the beach 🌅'] },
-            { id: 'rm2', name: 'Michael', avatar: '🎸', messages: ['Hey gorgeous 😊', 'You seem really interesting', 'I love romantic movies'] },
-            { id: 'rm3', name: 'David', avatar: '📚', messages: ['You caught my attention ✨', 'I\'m a hopeless romantic', 'Coffee date sometime? ☕'] }
+            { id: 'rm1', name: 'Sophia', avatar: '🌸', messages: ['Hi handsome 😊', 'You seem sweet', 'I love romantic dinners'] },
+            { id: 'rm2', name: 'Emma', avatar: '💕', messages: ['Hey you ✨', 'You look interesting', 'I believe in love at first chat'] },
+            { id: 'rm3', name: 'Isabella', avatar: '🌹', messages: ['Hi there 😊', 'You seem like a gentleman', 'I love flowers and candles'] }
         ],
         female: [
-            { id: 'rf1', name: 'Sophia', avatar: '🌸', messages: ['Hi handsome 😊', 'You seem sweet', 'I love romantic dinners'] },
-            { id: 'rf2', name: 'Emma', avatar: '💕', messages: ['Hey you ✨', 'You look interesting', 'I believe in love at first chat'] },
-            { id: 'rf3', name: 'Isabella', avatar: '🌹', messages: ['Hi there 😊', 'You seem like a gentleman', 'I love flowers and candles'] }
+            { id: 'rf1', name: 'James', avatar: '💼', messages: ['You look beautiful tonight ✨', 'What\'s your idea of a perfect date?', 'I love sunset walks on the beach 🌅'] },
+            { id: 'rf2', name: 'Michael', avatar: '🎸', messages: ['Hey gorgeous 😊', 'You seem really interesting', 'I love romantic movies'] },
+            { id: 'rf3', name: 'David', avatar: '📚', messages: ['You caught my attention ✨', 'I\'m a hopeless romantic', 'Coffee date sometime? ☕'] }
         ]
     };
 
@@ -1030,7 +1080,7 @@
         bio: '✨ Looking for meaningful connections ✨',
         mbti: 'INFJ',
         age: '25-32',
-        name: telegramUser?.first_name || 'Alex Morgan'
+        name: telegramUser?.first_name || 'Pulse User'
     };
     
     let visitors = [
@@ -1046,7 +1096,6 @@
     let currentConversation = null;
     let unreadCount = 0;
     
-    // Dating State
     let selectedGender = null;
     let activeBots = [];
     let inChat = false;
@@ -1054,7 +1103,6 @@
     let currentVote = null;
     let roomQueue = { men: 0, women: 0 };
     
-    // Leaderboard
     let leaderboard = [
         { name: 'Alex', streak: 45, avatar: '🔥' },
         { name: 'Sophia', streak: 32, avatar: '🌸' },
@@ -1063,14 +1111,8 @@
         { name: 'You', streak: 0, avatar: '👤' }
     ];
     
-    let liveActivities = [
-        'Sophia just matched with James ✨',
-        'Riley joined the app 🌟',
-        'Emma sent a message 💬',
-        'Alex completed their profile 🎯'
-    ];
-
     let genderFilter = 'all';
+    let currentPage = 1;
 
     // ========== STREAK SYSTEM ==========
     function checkStreak() {
@@ -1092,7 +1134,6 @@
                 let chest = document.getElementById('chestReward');
                 if (chest) {
                     chest.style.display = 'block';
-                    chest.classList.add('chest-animation');
                     setTimeout(() => { chest.style.display = 'none'; }, 2000);
                 }
             } else if (last !== yesterdayStr && last !== today && last !== null) {
@@ -1141,13 +1182,19 @@
                 let overlay = document.createElement('div');
                 overlay.className = 'unlock-overlay';
                 overlay.innerHTML = `<div class="unlock-btn">🔓 Unlock for 5 coins</div>`;
-                overlay.onclick = () => unlockVisitor(visitor);
+                overlay.onclick = (e) => {
+                    e.stopPropagation();
+                    unlockVisitor(visitor);
+                };
                 div.appendChild(overlay);
             } else if (!visitor.viewed && user.coins >= 5) {
                 let unlockBtn = document.createElement('button');
                 unlockBtn.textContent = '🔓 Unlock (5 coins)';
                 unlockBtn.style.cssText = 'margin-left: auto; background: #ff2d55; border: none; padding: 6px 12px; border-radius: 20px; cursor: pointer;';
-                unlockBtn.onclick = () => unlockVisitor(visitor);
+                unlockBtn.onclick = (e) => {
+                    e.stopPropagation();
+                    unlockVisitor(visitor);
+                };
                 div.appendChild(unlockBtn);
             }
             container.appendChild(div);
@@ -1222,22 +1269,6 @@
         setTimeout(() => notification.classList.remove('show'), 3000);
     }
     
-    function startRandomNotifications() {
-        let notifs = ['✨ Someone liked your profile!', '💕 New match available!', '👀 3 people viewed you today'];
-        setInterval(() => {
-            if (Math.random() > 0.7) sendNotification(notifs[Math.floor(Math.random() * notifs.length)]);
-        }, 45000);
-    }
-    
-    // ========== LIVE TICKER ==========
-    function updateTicker() {
-        setInterval(() => {
-            let random = liveActivities[Math.floor(Math.random() * liveActivities.length)];
-            let onlineCount = Math.floor(Math.random() * 200) + 150;
-            document.getElementById('ticker').innerHTML = `🔥 ${onlineCount} online • ${random} • 💕 ${matches.length} active chats`;
-        }, 10000);
-    }
-    
     // ========== COINS ==========
     function updateCoinDisplay() {
         document.getElementById('coinBalance').innerHTML = user.coins;
@@ -1262,11 +1293,11 @@
     // ========== DATING FUNCTIONS ==========
     function initializeRomanticRoom() {
         if (selectedGender === 'male') {
-            activeBots = [...romanticBots.female];
+            activeBots = [...romanticBots.male];
             roomQueue.men = 1;
             roomQueue.women = activeBots.length;
         } else {
-            activeBots = [...romanticBots.male];
+            activeBots = [...romanticBots.female];
             roomQueue.women = 1;
             roomQueue.men = activeBots.length;
         }
@@ -1352,6 +1383,7 @@
                         <h4>${profile.name}, ${profile.age}</h4>
                         <div><span class="profile-badge">${profile.mbti}</span> • ${profile.gender === 'male' ? '👨' : profile.gender === 'female' ? '👩' : '🌈'} • ${profile.occupation}</div>
                         <div style="font-size: 13px; margin-top: 6px;">"${profile.bio}"</div>
+                        <div style="font-size: 11px; margin-top: 4px; color: #ff2d55;">${profile.online ? '🟢 Online' : '⚫ Offline'}</div>
                     </div>
                 </div>
                 <div class="action-buttons">
@@ -1364,6 +1396,7 @@
         
         document.querySelectorAll('.like-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
+                e.stopPropagation();
                 let id = parseInt(btn.dataset.id);
                 let profile = friendProfiles.find(p => p.id === id);
                 if (friendLikes.includes(id)) {
@@ -1396,6 +1429,7 @@
         
         document.querySelectorAll('.chat-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
+                e.stopPropagation();
                 let id = parseInt(btn.dataset.chat);
                 let profile = friendProfiles.find(p => p.id === id);
                 if (!matches.find(m => m.id === id)) {
@@ -1458,6 +1492,7 @@
         
         document.querySelectorAll('[data-action="like"]').forEach(btn => {
             btn.addEventListener('click', (e) => {
+                e.stopPropagation();
                 let postId = parseInt(btn.dataset.id);
                 let post = posts.find(p => p.id === postId);
                 if (post) {
@@ -1470,6 +1505,7 @@
         
         document.querySelectorAll('[data-action="comment"]').forEach(btn => {
             btn.addEventListener('click', (e) => {
+                e.stopPropagation();
                 let postId = parseInt(btn.dataset.id);
                 let section = document.getElementById(`comments-${postId}`);
                 section.style.display = section.style.display === 'none' ? 'block' : 'none';
@@ -1478,6 +1514,7 @@
         
         document.querySelectorAll('.comment-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
+                e.stopPropagation();
                 let postId = parseInt(btn.dataset.post);
                 let input = document.getElementById(`comment-input-${postId}`);
                 let text = input.value.trim();
@@ -1518,7 +1555,11 @@
                     </div>
                 </div>
             `;
-            div.onclick = (e) => { if (!e.target.classList.contains('extend-btn')) openConversation(match.id); };
+            div.onclick = (e) => { 
+                if (!e.target.classList.contains('extend-btn')) {
+                    openConversation(match.id);
+                }
+            };
             container.appendChild(div);
         });
         
@@ -1605,18 +1646,17 @@
     
     // ========== INITIALIZE ==========
     function init() {
-        // Set Telegram user name if available
         if (telegramUser) {
-            document.getElementById('profileName').innerText = telegramUser.first_name || 'Alex Morgan';
-            user.name = telegramUser.first_name || 'Alex Morgan';
+            document.getElementById('profileName').innerText = telegramUser.first_name || 'Pulse User';
+            user.name = telegramUser.first_name || 'Pulse User';
+        } else {
+            document.getElementById('profileName').innerText = 'Pulse User';
         }
         
         checkStreak();
         renderVisitors();
         updateCoinDisplay();
         updateLeaderboard();
-        startRandomNotifications();
-        updateTicker();
         
         let savedCoins = localStorage.getItem('coins');
         if (savedCoins) user.coins = parseInt(savedCoins);
@@ -1714,6 +1754,23 @@
             }
         });
         
+        document.getElementById('messageInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && inChat) {
+                let input = document.getElementById('messageInput');
+                let text = input.value.trim();
+                if (text) {
+                    addMessage(text, 'sent', 'You');
+                    input.value = '';
+                    setTimeout(() => {
+                        if (inChat) {
+                            let randomBot = activeBots[Math.floor(Math.random() * activeBots.length)];
+                            addMessage('That\'s sweet! 💕', 'received', randomBot.name);
+                        }
+                    }, 1500);
+                }
+            }
+        });
+        
         // Friends
         document.getElementById('updateProfileBtn').addEventListener('click', () => {
             user.mbti = document.getElementById('mbtiSelect').value;
@@ -1753,7 +1810,6 @@
         
         document.getElementById('buyCoinsBtn').addEventListener('click', () => {
             if (tg) {
-                // Show Telegram Stars purchase dialog
                 tg.showPopup({
                     title: 'Buy Coins',
                     message: '10 coins = 1 Telegram Star',
@@ -1781,9 +1837,10 @@
         });
         
         document.getElementById('sendChatBtn').addEventListener('click', sendChatMessage);
-        document.getElementById('chatInput').addEventListener('keypress', (e) => { if (e.key === 'Enter') sendChatMessage(); });
+        document.getElementById('chatInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendChatMessage();
+        });
         
-        // Send ready signal to Telegram
         if (tg) {
             tg.ready();
         }
